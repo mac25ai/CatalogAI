@@ -1,0 +1,90 @@
+● Everything passes. The build is complete and fully verified — the server is running right now at http://localhost:8000 so you can open it in your browser
+  immediately.
+
+  ---
+  ✅ CatalogAI — Build Complete
+
+  What was verified (not just built — actually tested)
+
+  - Server boots with the single command from the spec, no env vars, no database.
+  - All 11 public routes return 200; unknown URLs show the custom 404 page.
+  - Chatbot mock API answers price and delivery questions correctly for both shops, with the WhatsApp escalation flag.
+  - Admin: login succeeds, wrong password returns 401, stock toggle flips and restores via AJAX, and a full add → view live → edit → delete product round
+  trip worked, writing straight to config.json.
+  - Settings form saves and both demo configs remained intact (6 + 5 products).
+
+  Files created (34)
+
+  ┌─────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │      Area       │                                                Files                                                │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ App core        │ main.py, requirements.txt, README.md                                                                │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Routers         │ routers/catalogue.py, routers/admin.py, routers/chatbot.py                                          │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Services        │ services/config_loader.py, services/search.py                                                       │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Shop templates  │ base.html, shop/home.html, category.html, product.html, search.html, about.html                     │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Admin templates │ admin/login.html, dashboard.html, product_form.html, settings.html                                  │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Components      │ components/product_card.html, chatbot_widget.html, whatsapp_button.html                             │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Other pages     │ landing.html, 404.html                                                                              │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Static          │ css/custom.css, js/gallery.js, variants.js, chatbot.js, search.js                                   │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Clients         │ zara-perfumes/config.json (6 products), henna-house/config.json (5 products), _template/config.json │
+  ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ Auth            │ admin_credentials.json                                                                              │
+  └─────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  How to run it (whenever you want)
+
+  venv\Scripts\activate
+  uvicorn main:app --reload --port 8000
+  (The venv is already created and dependencies installed — I did that during the build.)
+
+  Test URLs
+
+  ┌──────────────────────────────────────────────────────────────────┬────────────────────────────────────────┐
+  │                               URL                                │                  Page                  │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/                                           │ CatalogAI landing page (MAC25AI brand) │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/shop/zara-perfumes                         │ Zara Perfumes catalogue                │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/shop/zara-perfumes/category/oud-collection │ Category page                          │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/shop/zara-perfumes/product/royal-oud-50ml  │ Product detail (gallery + variants)    │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/shop/zara-perfumes/search?q=oud            │ Search results                         │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/shop/zara-perfumes/about                   │ About + FAQ accordion                  │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/shop/henna-house                           │ Henna House catalogue                  │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/admin/zara-perfumes/login                  │ Admin — password admin123              │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/admin/henna-house/login                    │ Admin — password admin456              │
+  ├──────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ http://localhost:8000/health                                     │ {"status": "ok"}                       │
+  └──────────────────────────────────────────────────────────────────┴────────────────────────────────────────┘
+
+  Tip: press F12 in Chrome → toggle device toolbar → pick a 375px phone. Every page is designed mobile-first.
+
+  Engineer handover checklist
+
+  1. Real Claude API chatbot — in routers/chatbot.py, replace mock_response() (marked # ENGINEER:). pip install anthropic, model claude-sonnet-4-6, inject
+  the full product catalogue + FAQs as system context, key from ANTHROPIC_API_KEY.
+  2. Railway deployment — add railway.toml with the uvicorn start command, connect the GitHub repo, set ANTHROPIC_API_KEY in the Railway dashboard.
+  3. Database migration (optional, Stage 1) — JSON files in clients/ → PostgreSQL (tables: clients, categories, products, faqs). The config_loader.py
+  interface stays the same; only the data source changes.
+  4. Proper authentication — hash the passwords in admin_credentials.json (or JWT/OAuth) and move the session secret in main.py to an environment variable.
+
+  Two decisions I made along the way
+
+  - The landing page CTA uses a placeholder WhatsApp number 919999999999 — swap in your real MAC25AI number in templates/landing.html (2 places).
+  - Demo images use via.placeholder.com in each client's brand colors, as the spec allows. For real clients, paste imgbb.com URLs into the admin panel.
+
+✻ Churned for 18m 8s · 1 shell still running

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — {{ business.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <style>
+    :root {
+      --primary: {{ business.primary_color }};
+      --secondary: {{ business.secondary_color }};
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center px-4 antialiased">
+
+  <div class="w-full max-w-sm">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div class="text-center mb-6">
+        {% if business.logo_url %}
+        <img src="{{ business.logo_url }}" alt="{{ business.name }} logo"
+             class="w-14 h-14 rounded-full object-cover mx-auto mb-3">
+        {% endif %}
+        <h1 class="text-xl font-extrabold" style="color: var(--primary)">{{ business.name }}</h1>
+        <p class="text-sm text-gray-500 mt-1">Admin Panel</p>
+      </div>
+
+      {% if error %}
+      <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="post" action="/admin/{{ slug }}/login">
+        <input type="hidden" name="slug" value="{{ slug }}">
+        <label for="password" class="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+        <input type="password" name="password" id="password" required autofocus
+               placeholder="Enter admin password"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 min-h-[48px]">
+        <button type="submit"
+                class="mt-4 w-full text-white font-bold py-3.5 rounded-lg min-h-[48px]"
+                style="background-color: var(--primary)">
+          Log In
+        </button>
+      </form>
+    </div>
+    <p class="text-center text-xs text-gray-400 mt-6">
+      CatalogAI Admin · Managed by MAC25AI
+    </p>
+  </div>
+
+</body>
+</html>

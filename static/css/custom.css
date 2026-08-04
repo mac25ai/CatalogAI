@@ -1,0 +1,49 @@
+/* CatalogAI — small overrides on top of Tailwind CDN */
+
+/* Brand-color utility classes driven by the per-client CSS variables */
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+.text-primary {
+  color: var(--primary) !important;
+}
+.ring-primary {
+  --tw-ring-color: var(--primary) !important;
+}
+.border-primary {
+  border-color: var(--primary) !important;
+}
+
+/* Chat window slide-up animation */
+.chatbot-slide-up {
+  animation: chatbot-slide-up 0.25s ease-out;
+}
+@keyframes chatbot-slide-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Hide the default disclosure marker on FAQ accordions (Safari) */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Smoother horizontal scrolling for the featured products row */
+.snap-x {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.snap-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* Keep body text readable — never below 14px */
+html {
+  font-size: 16px;
+}

@@ -1,0 +1,255 @@
+{
+  "business": {
+    "name": "Zara Perfumes",
+    "slug": "zara-perfumes",
+    "tagline": "Luxury fragrances, Kerala prices",
+    "about": "Family-run attar and perfume house in the heart of Calicut since 2009. We blend imported oud and fresh florals into long-lasting fragrances — every bottle is hand-checked before it reaches you.",
+    "logo_url": "https://via.placeholder.com/200x200/1a1a2e/c9a96e?text=ZP",
+    "primary_color": "#1a1a2e",
+    "secondary_color": "#c9a96e",
+    "whatsapp_number": "919876543210",
+    "whatsapp_greeting": "Hi Zara Perfumes! I just browsed your catalogue. Can you help me pick a fragrance?",
+    "location": "SM Street, Calicut, Kerala",
+    "hours": "Mon–Sat, 10AM–8PM",
+    "instagram_url": "https://instagram.com/zaraperfumes",
+    "facebook_url": "",
+    "google_maps_url": "https://maps.google.com/?q=SM+Street+Calicut+Kerala",
+    "language": "en",
+    "chatbot_name": "Zara Assistant",
+    "chatbot_greeting": "Hi! Welcome to Zara Perfumes 🌸 How can I help you today?"
+  },
+  "categories": [
+    {
+      "id": "oud-collection",
+      "name": "Oud Collection",
+      "image_url": "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Oud+Collection",
+      "display_order": 1
+    },
+    {
+      "id": "floral-collection",
+      "name": "Floral Collection",
+      "image_url": "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Floral+Collection",
+      "display_order": 2
+    }
+  ],
+  "products": [
+    {
+      "id": "royal-oud-50ml",
+      "name": "Royal Oud",
+      "category_id": "oud-collection",
+      "short_description": "A rich, woody fragrance with hints of rose.",
+      "long_description": "Royal Oud is our signature fragrance — a deep, luxurious blend of aged oud wood, Bulgarian rose, and warm amber. Perfect for evening wear and special occasions. Lasts 8–10 hours on skin.",
+      "price": 1500,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Royal+Oud",
+        "https://via.placeholder.com/600x600/2a2a3e/c9a96e?text=Royal+Oud+Bottle",
+        "https://via.placeholder.com/600x600/0a0a1e/c9a96e?text=Royal+Oud+Box"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": [
+            "30ml",
+            "50ml",
+            "100ml"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": true,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "oud",
+        "woody",
+        "luxury",
+        "evening"
+      ]
+    },
+    {
+      "id": "rose-mist",
+      "name": "Rose Mist",
+      "category_id": "floral-collection",
+      "short_description": "Fresh Damask rose water spray for everyday wear.",
+      "long_description": "Rose Mist captures the scent of fresh Damask roses picked at dawn. Light, airy, and never overpowering — ideal for office wear and daily use. Spray on pulse points or lightly on clothes. Lasts 4–5 hours.",
+      "price": 800,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/1a1a2e/e8b4bc?text=Rose+Mist",
+        "https://via.placeholder.com/600x600/2a2a3e/e8b4bc?text=Rose+Mist+Spray",
+        "https://via.placeholder.com/600x600/0a0a1e/e8b4bc?text=Rose+Mist+Box"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": [
+            "50ml",
+            "100ml"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "rose",
+        "floral",
+        "fresh",
+        "daily wear"
+      ]
+    },
+    {
+      "id": "oud-rose",
+      "name": "Oud Rose",
+      "category_id": "oud-collection",
+      "short_description": "Our bestselling fusion of smoky oud and sweet rose.",
+      "long_description": "Oud Rose is the fragrance our customers reorder the most. Smoky Cambodian oud meets sweet Taif rose in a perfectly balanced attar. Unisex, intense, and unforgettable — a little goes a long way. Lasts 10–12 hours.",
+      "price": 2200,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Oud+Rose",
+        "https://via.placeholder.com/600x600/2a2a3e/c9a96e?text=Oud+Rose+Attar",
+        "https://via.placeholder.com/600x600/0a0a1e/c9a96e?text=Oud+Rose+Gift"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": [
+            "12ml attar",
+            "50ml spray"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": true,
+      "bestseller": true,
+      "min_order_qty": 1,
+      "tags": [
+        "oud",
+        "rose",
+        "attar",
+        "unisex",
+        "bestseller"
+      ]
+    },
+    {
+      "id": "jasmine-dreams",
+      "name": "Jasmine Dreams",
+      "category_id": "floral-collection",
+      "short_description": "Night-blooming jasmine with a creamy sandalwood base.",
+      "long_description": "Jasmine Dreams is inspired by Kerala's night-blooming jasmine (kutti mulla). Heady white florals settle into a soft, creamy sandalwood base. A favourite for weddings and festive occasions. Lasts 6–8 hours.",
+      "price": 950,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/1a1a2e/f5f0e1?text=Jasmine+Dreams",
+        "https://via.placeholder.com/600x600/2a2a3e/f5f0e1?text=Jasmine+Bottle",
+        "https://via.placeholder.com/600x600/0a0a1e/f5f0e1?text=Jasmine+Box"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": [
+            "30ml",
+            "50ml"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "jasmine",
+        "floral",
+        "wedding",
+        "sandalwood"
+      ]
+    },
+    {
+      "id": "lavender-cloud",
+      "name": "Lavender Cloud",
+      "category_id": "floral-collection",
+      "short_description": "Calming French lavender, perfect for daily wear.",
+      "long_description": "Lavender Cloud blends French lavender with a whisper of vanilla and white musk. Soft, calming, and clean — customers tell us they wear it to sleep better. Great as a gift too. Lasts 5–6 hours.",
+      "price": 750,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/1a1a2e/b8a9d9?text=Lavender+Cloud",
+        "https://via.placeholder.com/600x600/2a2a3e/b8a9d9?text=Lavender+Spray",
+        "https://via.placeholder.com/600x600/0a0a1e/b8a9d9?text=Lavender+Box"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": [
+            "50ml",
+            "100ml"
+          ]
+        }
+      ],
+      "in_stock": false,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "lavender",
+        "calming",
+        "daily wear",
+        "gift"
+      ]
+    },
+    {
+      "id": "black-amber",
+      "name": "Black Amber",
+      "category_id": "oud-collection",
+      "short_description": "Limited-edition dark amber and oud blend.",
+      "long_description": "Black Amber is our limited small-batch release — dark amber resin, smoked oud, and a touch of saffron. Only a few bottles are made each month, so pricing varies by batch. WhatsApp us for the current price and availability.",
+      "price": 1800,
+      "price_hidden": true,
+      "images": [
+        "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Black+Amber",
+        "https://via.placeholder.com/600x600/2a2a3e/c9a96e?text=Black+Amber+Bottle",
+        "https://via.placeholder.com/600x600/0a0a1e/c9a96e?text=Black+Amber+Box"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": [
+            "30ml",
+            "50ml"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "amber",
+        "oud",
+        "limited edition",
+        "saffron"
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do you deliver outside Kerala?",
+      "answer": "Yes! We ship all over India. Delivery takes 3–5 business days and we share tracking on WhatsApp."
+    },
+    {
+      "question": "What is your return policy?",
+      "answer": "We accept returns within 7 days if the product is unopened and the seal is intact."
+    },
+    {
+      "question": "Are your ingredients authentic?",
+      "answer": "Yes. Our oud is sourced from certified suppliers in Cambodia and Assam, and our floral oils are steam-distilled. Every batch is tested before bottling."
+    },
+    {
+      "question": "Do you offer gift wrapping?",
+      "answer": "Absolutely! Gift wrapping with a handwritten note is free on all orders above ₹1,000. Just mention it on WhatsApp when you order."
+    }
+  ]
+}

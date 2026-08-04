@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — {{ business.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <style>
+    :root {
+      --primary: {{ business.primary_color }};
+      --secondary: {{ business.secondary_color }};
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen antialiased">
+
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <h1 class="font-bold text-base">Business Settings</h1>
+      <a href="/admin/{{ slug }}/dashboard"
+         class="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 min-h-[44px] flex items-center">← Dashboard</a>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 py-6">
+
+    {% if saved %}
+    <div class="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3 mb-4">
+      ✅ Settings saved successfully.
+    </div>
+    {% endif %}
+
+    <form method="post" action="/admin/{{ slug }}/settings"
+          class="bg-white rounded-xl border border-gray-200 p-5 space-y-5">
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Business name *</label>
+        <input type="text" name="name" required value="{{ business.name }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tagline</label>
+        <input type="text" name="tagline" value="{{ business.tagline }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">About (2–3 sentences)</label>
+        <textarea name="about" rows="3"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm">{{ business.about }}</textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Logo URL</label>
+        <input type="url" name="logo_url" value="{{ business.logo_url }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono min-h-[48px]">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Primary color</label>
+          <div class="flex gap-2 items-center">
+            <input type="color" name="primary_color" value="{{ business.primary_color }}"
+                   class="w-12 h-12 rounded-lg border border-gray-300 cursor-pointer">
+            <code class="text-xs text-gray-500">{{ business.primary_color }}</code>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Secondary color</label>
+          <div class="flex gap-2 items-center">
+            <input type="color" name="secondary_color" value="{{ business.secondary_color }}"
+                   class="w-12 h-12 rounded-lg border border-gray-300 cursor-pointer">
+            <code class="text-xs text-gray-500">{{ business.secondary_color }}</code>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">WhatsApp number (with country code, digits only)</label>
+        <input type="text" name="whatsapp_number" value="{{ business.whatsapp_number }}"
+               placeholder="919876543210" pattern="[0-9]{10,15}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">WhatsApp greeting message</label>
+        <textarea name="whatsapp_greeting" rows="2"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm">{{ business.whatsapp_greeting }}</textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Location</label>
+          <input type="text" name="location" value="{{ business.location }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Business hours</label>
+          <input type="text" name="hours" value="{{ business.hours }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Instagram URL</label>
+        <input type="url" name="instagram_url" value="{{ business.instagram_url }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Facebook URL</label>
+        <input type="url" name="facebook_url" value="{{ business.facebook_url }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Google Maps URL</label>
+        <input type="url" name="google_maps_url" value="{{ business.google_maps_url }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono min-h-[48px]">
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Chatbot name</label>
+          <input type="text" name="chatbot_name" value="{{ business.chatbot_name }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Language code</label>
+          <input type="text" name="language" value="{{ business.language }}" placeholder="en"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Chatbot greeting</label>
+        <textarea name="chatbot_greeting" rows="2"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm">{{ business.chatbot_greeting }}</textarea>
+      </div>
+
+      <button type="submit"
+              class="w-full text-white font-bold py-3.5 rounded-lg min-h-[52px]"
+              style="background-color: var(--primary)">
+        Save Settings
+      </button>
+    </form>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "_instructions": "MASTER TEMPLATE for new clients. Copy this folder to clients/[new-slug]/, fill in every field, set business.slug to match the folder name exactly, then add the slug + password to admin_credentials.json. Delete this _instructions line when done.",
+  "business": {
+    "name": "Business Name",
+    "slug": "url-safe-slug",
+    "tagline": "Short punchy tagline",
+    "about": "2-3 sentences about the business.",
+    "logo_url": "https://i.ibb.co/example/logo.png",
+    "primary_color": "#1a1a2e",
+    "secondary_color": "#e94560",
+    "whatsapp_number": "919876543210",
+    "whatsapp_greeting": "Hi! I just browsed your catalogue. Can you help me?",
+    "location": "Calicut, Kerala",
+    "hours": "Mon–Sat, 10AM–8PM",
+    "instagram_url": "https://instagram.com/example",
+    "facebook_url": "",
+    "google_maps_url": "https://maps.google.com/?q=Calicut+Kerala",
+    "language": "en",
+    "chatbot_name": "Shop Assistant",
+    "chatbot_greeting": "Hi! Welcome 👋 How can I help you today?"
+  },
+  "categories": [
+    {
+      "id": "category-id",
+      "name": "Category Name",
+      "image_url": "https://i.ibb.co/example/category.jpg",
+      "display_order": 1
+    }
+  ],
+  "products": [
+    {
+      "id": "product-id",
+      "name": "Product Name",
+      "category_id": "category-id",
+      "short_description": "One line shown on product cards.",
+      "long_description": "Full product details shown on the product page. 2-4 sentences covering what it is, what makes it special, and any usage or care notes.",
+      "price": 999,
+      "price_hidden": false,
+      "images": [
+        "https://i.ibb.co/example/product-1.jpg",
+        "https://i.ibb.co/example/product-2.jpg"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": ["Small", "Medium", "Large"]
+        }
+      ],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": ["tag1", "tag2"]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do you deliver outside Kerala?",
+      "answer": "Yes! We ship all over India. Delivery takes 3–5 business days."
+    },
+    {
+      "question": "What is your return policy?",
+      "answer": "We accept returns within 7 days if the product is unopened."
+    }
+  ]
+}

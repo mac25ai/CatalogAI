@@ -1,0 +1,208 @@
+{
+  "business": {
+    "name": "Henna House",
+    "slug": "henna-house",
+    "tagline": "100% natural henna, straight from our farm",
+    "about": "We grow, dry, and grind our own henna in Palakkad and hand-roll every cone fresh to order. Trusted by 200+ bridal artists across Kerala for deep, long-lasting colour with zero chemicals.",
+    "logo_url": "https://via.placeholder.com/200x200/2d5016/f4a261?text=HH",
+    "primary_color": "#2d5016",
+    "secondary_color": "#f4a261",
+    "whatsapp_number": "918765432109",
+    "whatsapp_greeting": "Hi Henna House! I just browsed your catalogue. Can you help me with an order?",
+    "location": "Mavoor Road, Calicut, Kerala",
+    "hours": "Mon–Sat, 9AM–7PM",
+    "instagram_url": "https://instagram.com/hennahouse",
+    "facebook_url": "https://facebook.com/hennahouse",
+    "google_maps_url": "https://maps.google.com/?q=Mavoor+Road+Calicut+Kerala",
+    "language": "en",
+    "chatbot_name": "Henna Helper",
+    "chatbot_greeting": "Hello! Welcome to Henna House 🌿 Ask me anything about our natural henna products!"
+  },
+  "categories": [
+    {
+      "id": "natural-henna",
+      "name": "Natural Henna",
+      "image_url": "https://via.placeholder.com/600x600/2d5016/f4a261?text=Natural+Henna",
+      "display_order": 1
+    },
+    {
+      "id": "accessories",
+      "name": "Accessories",
+      "image_url": "https://via.placeholder.com/600x600/2d5016/f4a261?text=Accessories",
+      "display_order": 2
+    }
+  ],
+  "products": [
+    {
+      "id": "premium-henna-cone",
+      "name": "Premium Henna Cone",
+      "category_id": "natural-henna",
+      "short_description": "Fresh hand-rolled cone, deep maroon stain.",
+      "long_description": "Our premium cones are rolled fresh on the day of dispatch using triple-sifted Rajasthani henna, eucalyptus oil, and nothing else. No PPD, no chemicals, no artificial dyes. Gives a deep maroon stain in 6–8 hours. Store in the freezer and use within 3 months. Sold in packs of 5.",
+      "price": 120,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Cone",
+        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Cone+Pack",
+        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Stain+Result"
+      ],
+      "variants": [
+        {
+          "name": "Pack size",
+          "options": [
+            "5 cones",
+            "10 cones",
+            "25 cones (bulk)"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": true,
+      "bestseller": false,
+      "min_order_qty": 5,
+      "tags": [
+        "cone",
+        "natural",
+        "bridal",
+        "fresh",
+        "maroon"
+      ]
+    },
+    {
+      "id": "natural-henna-powder-100g",
+      "name": "Natural Henna Powder 100g",
+      "category_id": "natural-henna",
+      "short_description": "Triple-sifted farm henna powder for hair and body art.",
+      "long_description": "Pure, triple-sifted henna powder from our own Palakkad farm — the same batch we use in our cones. Works beautifully for hair conditioning and body art alike. Mix with lemon juice and sugar for body art, or with warm water for hair. 100g pouch, vacuum-sealed for freshness.",
+      "price": 280,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Powder",
+        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Powder+Pouch",
+        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Powder+Texture"
+      ],
+      "variants": [
+        {
+          "name": "Weight",
+          "options": [
+            "100g",
+            "250g",
+            "500g"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "powder",
+        "hair",
+        "natural",
+        "farm fresh"
+      ]
+    },
+    {
+      "id": "body-art-henna-kit",
+      "name": "Body Art Henna Kit",
+      "category_id": "natural-henna",
+      "short_description": "Complete beginner kit — cones, oil, stencils & guide.",
+      "long_description": "Everything you need to start doing beautiful henna at home: 5 premium cones, mehndi oil for deeper stain, 12 reusable design stencils, cellophane wrap, and our printed beginner's guide with 20 designs. Our most-gifted product — perfect for birthdays and bridal showers.",
+      "price": 650,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Kit",
+        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Kit+Contents",
+        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Kit+Designs"
+      ],
+      "variants": [],
+      "in_stock": true,
+      "featured": true,
+      "bestseller": true,
+      "min_order_qty": 1,
+      "tags": [
+        "kit",
+        "beginner",
+        "gift",
+        "stencils",
+        "bestseller"
+      ]
+    },
+    {
+      "id": "glitter-henna-set",
+      "name": "Glitter Henna Set",
+      "category_id": "accessories",
+      "short_description": "6 cosmetic-grade glitter gels for party designs.",
+      "long_description": "Add sparkle over your henna designs with our set of 6 cosmetic-grade glitter gels — gold, silver, rose, emerald, bronze, and multicolour. Skin-safe, easy-squeeze tubes, washes off with water. A party and wedding-season favourite among artists.",
+      "price": 450,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Glitter+Set",
+        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Glitter+Colours",
+        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Glitter+Design"
+      ],
+      "variants": [],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "glitter",
+        "party",
+        "wedding",
+        "accessories"
+      ]
+    },
+    {
+      "id": "brown-henna-paste",
+      "name": "Brown Henna Paste",
+      "category_id": "natural-henna",
+      "short_description": "Ready-to-use paste jar for quick touch-ups.",
+      "long_description": "Ready-mixed natural henna paste in a resealable 100g jar — no mixing, no waiting. Ideal for quick touch-ups, small designs, and practice. Made with our farm henna and pure essential oils. Refrigerate after opening and use within 4 weeks.",
+      "price": 150,
+      "price_hidden": false,
+      "images": [
+        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Paste",
+        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Paste+Jar",
+        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Paste+Applied"
+      ],
+      "variants": [
+        {
+          "name": "Jar size",
+          "options": [
+            "100g",
+            "200g"
+          ]
+        }
+      ],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": [
+        "paste",
+        "ready to use",
+        "touch-up",
+        "practice"
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Is your henna really 100% natural?",
+      "answer": "Yes — we grow and grind it ourselves in Palakkad. Our cones contain only henna, eucalyptus oil, lemon, and sugar. No PPD, no chemical dyes, ever."
+    },
+    {
+      "question": "What is the shelf life of the cones?",
+      "answer": "Fresh cones last 2–3 days at room temperature, 2 weeks in the fridge, and up to 3 months in the freezer. Thaw for 15 minutes before use."
+    },
+    {
+      "question": "How do I get the darkest stain?",
+      "answer": "Apply on clean skin, leave the paste on for 6–8 hours, avoid water for 12 hours after removal, and dab with eucalyptus or mehndi oil. Colour deepens over 48 hours."
+    },
+    {
+      "question": "Do you take bulk orders for artists and events?",
+      "answer": "Yes! We supply bridal artists and event planners across Kerala. Bulk pricing starts at 25 cones — WhatsApp us for wholesale rates."
+    }
+  ]
+}

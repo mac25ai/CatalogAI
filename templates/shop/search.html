@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "components/product_card.html" import product_card with context %}
+
+{% block title %}Search — {{ business.name }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-4 py-6">
+
+  <!-- Search bar -->
+  <form action="/shop/{{ slug }}/search" method="get" class="relative">
+    <input type="search" name="q" id="search-input" value="{{ query }}"
+           placeholder="Search products…" autocomplete="off"
+           class="w-full border border-gray-300 rounded-full pl-12 pr-4 py-3.5 text-sm focus:outline-none focus:ring-2 min-h-[48px]"
+           style="--tw-ring-color: var(--primary)">
+    <button type="submit" aria-label="Search"
+            class="absolute left-1 top-1/2 -translate-y-1/2 p-2.5 text-gray-500">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+    </button>
+  </form>
+
+  {% if query %}
+  <p id="result-count" class="mt-4 text-sm text-gray-600">
+    <span class="font-semibold">{{ results | length }}</span> product{{ 's' if results | length != 1 }} found for "<span class="font-semibold">{{ query }}</span>"
+  </p>
+  {% else %}
+  <p class="mt-4 text-sm text-gray-500">Type above to search our catalogue.</p>
+  {% endif %}
+
+  {% if results %}
+  <div id="search-results" class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+    {% for product in results %}
+    <div class="search-result" data-name="{{ product.name | lower }}" data-tags="{{ product.tags | join(' ') | lower }}">
+      {{ product_card(product, slug, business) }}
+    </div>
+    {% endfor %}
+  </div>
+  {% elif query %}
+  <!-- Empty state -->
+  <div class="text-center py-16">
+    <svg class="w-14 h-14 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+    <p class="mt-4 text-gray-600 font-medium">No products found. Try a different search.</p>
+    <a href="https://wa.me/{{ business.whatsapp_number }}?text={{ ('Hi! I searched for \"' ~ query ~ '\" on your catalogue. Do you have it?') | urlencode }}"
+       target="_blank" rel="noopener"
+       class="inline-flex items-center gap-2 mt-5 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-full min-h-[44px]">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      Ask us on WhatsApp
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/search.js"></script>
+{% endblock %}

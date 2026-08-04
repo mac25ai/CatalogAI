@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "components/product_card.html" import product_card with context %}
+
+{% block title %}{{ category.name }} — {{ business.name }}{% endblock %}
+
+{% block content %}
+
+<!-- Category header -->
+<section class="relative">
+  <img src="{{ category.image_url }}" alt="{{ category.name }}"
+       class="w-full h-44 md:h-64 object-cover">
+  <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20"></div>
+  <div class="absolute bottom-0 left-0 right-0 p-4 max-w-5xl mx-auto">
+    <a href="/shop/{{ slug }}" class="text-white/80 text-sm inline-flex items-center gap-1 mb-1 min-h-[44px] items-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+      Back to shop
+    </a>
+    <h1 class="text-white text-2xl font-extrabold">{{ category.name }}</h1>
+    <p class="text-white/80 text-sm">{{ products | length }} product{{ 's' if products | length != 1 }}</p>
+  </div>
+</section>
+
+<!-- Product grid -->
+<section class="px-4 py-8 max-w-5xl mx-auto">
+  {% if products %}
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+    {% for product in products %}
+    {{ product_card(product, slug, business) }}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-16">
+    <p class="text-gray-500">No products in this category yet.</p>
+    <a href="/shop/{{ slug }}" class="inline-block mt-4 font-semibold underline underline-offset-2" style="color: var(--primary)">Browse all products</a>
+  </div>
+  {% endif %}
+</section>
+
+{% endblock %}

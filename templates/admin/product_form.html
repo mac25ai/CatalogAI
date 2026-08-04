@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ form_title }} — {{ business.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <style>
+    :root {
+      --primary: {{ business.primary_color }};
+      --secondary: {{ business.secondary_color }};
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen antialiased">
+
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <h1 class="font-bold text-base truncate">{{ form_title }}</h1>
+      <a href="/admin/{{ slug }}/dashboard"
+         class="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 min-h-[44px] flex items-center">← Dashboard</a>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 py-6">
+    <form method="post" action="{{ form_action }}"
+          class="bg-white rounded-xl border border-gray-200 p-5 space-y-5">
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Product name *</label>
+        <input type="text" name="name" required value="{{ product.name if product else '' }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Category *</label>
+        <select name="category_id" required
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px] bg-white">
+          {% for category in categories %}
+          <option value="{{ category.id }}"
+                  {{ 'selected' if product and product.category_id == category.id }}>
+            {{ category.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Short description</label>
+        <input type="text" name="short_description" maxlength="120"
+               value="{{ product.short_description if product else '' }}"
+               placeholder="One line shown on product cards"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Long description</label>
+        <textarea name="long_description" rows="4"
+                  placeholder="Full details shown on the product page"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm">{{ product.long_description if product else '' }}</textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Price (₹)</label>
+          <input type="number" name="price" min="0" step="1"
+                 value="{{ product.price if product else '' }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Min. order qty</label>
+          <input type="number" name="min_order_qty" min="1" step="1"
+                 value="{{ product.min_order_qty if product else 1 }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        </div>
+      </div>
+
+      <label class="flex items-center gap-3 min-h-[44px] cursor-pointer">
+        <input type="checkbox" name="price_hidden" class="w-5 h-5 rounded"
+               {{ 'checked' if product and product.price_hidden }}>
+        <span class="text-sm text-gray-700">Hide price (show "Contact for price" instead)</span>
+      </label>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Image URLs (one per line)</label>
+        <textarea name="images" rows="3" placeholder="https://i.ibb.co/…/photo1.jpg&#10;https://i.ibb.co/…/photo2.jpg"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono">{{ product.images | join('\n') if product else '' }}</textarea>
+        <p class="text-xs text-gray-400 mt-1">Upload photos to imgbb.com (free) and paste the direct image links here.</p>
+      </div>
+
+      <!-- Variant groups (dynamic add/remove) -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Variants (e.g. Size, Colour)</label>
+        <div id="variant-groups" class="space-y-3">
+          {% if product and product.variants %}
+          {% for variant in product.variants %}
+          <div class="variant-group flex gap-2 items-start">
+            <input type="text" name="variant_name" value="{{ variant.name }}" placeholder="Group (e.g. Size)"
+                   class="w-1/3 border border-gray-300 rounded-lg px-3 py-2.5 text-sm min-h-[44px]">
+            <input type="text" name="variant_options" value="{{ variant.options | join(', ') }}"
+                   placeholder="Options, comma-separated"
+                   class="flex-1 border border-gray-300 rounded-lg px-3 py-2.5 text-sm min-h-[44px]">
+            <button type="button" onclick="this.closest('.variant-group').remove()"
+                    class="text-red-500 px-2 py-2.5 min-h-[44px]" aria-label="Remove variant group">✕</button>
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+        <button type="button" onclick="addVariantGroup()"
+                class="mt-2 text-sm font-semibold border border-dashed border-gray-300 text-gray-600 px-4 py-2.5 rounded-lg w-full min-h-[44px] hover:bg-gray-50">
+          + Add variant group
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-1">
+        <label class="flex items-center gap-3 min-h-[44px] cursor-pointer">
+          <input type="checkbox" name="in_stock" class="w-5 h-5 rounded"
+                 {{ 'checked' if (product and product.in_stock) or not product }}>
+          <span class="text-sm text-gray-700">In stock</span>
+        </label>
+        <label class="flex items-center gap-3 min-h-[44px] cursor-pointer">
+          <input type="checkbox" name="featured" class="w-5 h-5 rounded"
+                 {{ 'checked' if product and product.featured }}>
+          <span class="text-sm text-gray-700">Featured (shown in the featured row on homepage)</span>
+        </label>
+        <label class="flex items-center gap-3 min-h-[44px] cursor-pointer">
+          <input type="checkbox" name="bestseller" class="w-5 h-5 rounded"
+                 {{ 'checked' if product and product.bestseller }}>
+          <span class="text-sm text-gray-700">Bestseller badge</span>
+        </label>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Tags (comma-separated)</label>
+        <input type="text" name="tags" value="{{ product.tags | join(', ') if product else '' }}"
+               placeholder="oud, woody, luxury"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        <p class="text-xs text-gray-400 mt-1">Tags help customers find this product in search.</p>
+      </div>
+
+      <button type="submit"
+              class="w-full text-white font-bold py-3.5 rounded-lg min-h-[52px]"
+              style="background-color: var(--primary)">
+        Save Product
+      </button>
+    </form>
+  </main>
+
+  <script>
+    function addVariantGroup() {
+      const container = document.getElementById('variant-groups');
+      const div = document.createElement('div');
+      div.className = 'variant-group flex gap-2 items-start';
+      div.innerHTML = `
+        <input type="text" name="variant_name" placeholder="Group (e.g. Size)"
+               class="w-1/3 border border-gray-300 rounded-lg px-3 py-2.5 text-sm min-h-[44px]">
+        <input type="text" name="variant_options" placeholder="Options, comma-separated"
+               class="flex-1 border border-gray-300 rounded-lg px-3 py-2.5 text-sm min-h-[44px]">
+        <button type="button" onclick="this.closest('.variant-group').remove()"
+                class="text-red-500 px-2 py-2.5 min-h-[44px]" aria-label="Remove variant group">✕</button>`;
+      container.appendChild(div);
+    }
+  </script>
+
+</body>
+</html>
