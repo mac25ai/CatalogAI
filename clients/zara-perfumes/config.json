@@ -4,7 +4,7 @@
     "slug": "zara-perfumes",
     "tagline": "Luxury fragrances, Kerala prices",
     "about": "Family-run attar and perfume house in the heart of Calicut since 2009. We blend imported oud and fresh florals into long-lasting fragrances — every bottle is hand-checked before it reaches you.",
-    "logo_url": "https://via.placeholder.com/200x200/1a1a2e/c9a96e?text=ZP",
+    "logo_url": "https://placehold.co/200x200/1a1a2e/c9a96e?text=ZP",
     "primary_color": "#1a1a2e",
     "secondary_color": "#c9a96e",
     "whatsapp_number": "919876543210",
@@ -22,13 +22,13 @@
     {
       "id": "oud-collection",
       "name": "Oud Collection",
-      "image_url": "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Oud+Collection",
+      "image_url": "https://placehold.co/600x600/1a1a2e/c9a96e?text=Oud+Collection",
       "display_order": 1
     },
     {
       "id": "floral-collection",
       "name": "Floral Collection",
-      "image_url": "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Floral+Collection",
+      "image_url": "https://placehold.co/600x600/1a1a2e/c9a96e?text=Floral+Collection",
       "display_order": 2
     }
   ],
@@ -42,9 +42,9 @@
       "price": 1500,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Royal+Oud",
-        "https://via.placeholder.com/600x600/2a2a3e/c9a96e?text=Royal+Oud+Bottle",
-        "https://via.placeholder.com/600x600/0a0a1e/c9a96e?text=Royal+Oud+Box"
+        "https://placehold.co/600x600/1a1a2e/c9a96e?text=Royal+Oud",
+        "https://placehold.co/600x600/2a2a3e/c9a96e?text=Royal+Oud+Bottle",
+        "https://placehold.co/600x600/0a0a1e/c9a96e?text=Royal+Oud+Box"
       ],
       "variants": [
         {
@@ -76,9 +76,9 @@
       "price": 800,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/1a1a2e/e8b4bc?text=Rose+Mist",
-        "https://via.placeholder.com/600x600/2a2a3e/e8b4bc?text=Rose+Mist+Spray",
-        "https://via.placeholder.com/600x600/0a0a1e/e8b4bc?text=Rose+Mist+Box"
+        "https://placehold.co/600x600/1a1a2e/e8b4bc?text=Rose+Mist",
+        "https://placehold.co/600x600/2a2a3e/e8b4bc?text=Rose+Mist+Spray",
+        "https://placehold.co/600x600/0a0a1e/e8b4bc?text=Rose+Mist+Box"
       ],
       "variants": [
         {
@@ -109,9 +109,9 @@
       "price": 2200,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Oud+Rose",
-        "https://via.placeholder.com/600x600/2a2a3e/c9a96e?text=Oud+Rose+Attar",
-        "https://via.placeholder.com/600x600/0a0a1e/c9a96e?text=Oud+Rose+Gift"
+        "https://placehold.co/600x600/1a1a2e/c9a96e?text=Oud+Rose",
+        "https://placehold.co/600x600/2a2a3e/c9a96e?text=Oud+Rose+Attar",
+        "https://placehold.co/600x600/0a0a1e/c9a96e?text=Oud+Rose+Gift"
       ],
       "variants": [
         {
@@ -143,9 +143,9 @@
       "price": 950,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/1a1a2e/f5f0e1?text=Jasmine+Dreams",
-        "https://via.placeholder.com/600x600/2a2a3e/f5f0e1?text=Jasmine+Bottle",
-        "https://via.placeholder.com/600x600/0a0a1e/f5f0e1?text=Jasmine+Box"
+        "https://placehold.co/600x600/1a1a2e/f5f0e1?text=Jasmine+Dreams",
+        "https://placehold.co/600x600/2a2a3e/f5f0e1?text=Jasmine+Bottle",
+        "https://placehold.co/600x600/0a0a1e/f5f0e1?text=Jasmine+Box"
       ],
       "variants": [
         {
@@ -176,9 +176,9 @@
       "price": 750,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/1a1a2e/b8a9d9?text=Lavender+Cloud",
-        "https://via.placeholder.com/600x600/2a2a3e/b8a9d9?text=Lavender+Spray",
-        "https://via.placeholder.com/600x600/0a0a1e/b8a9d9?text=Lavender+Box"
+        "https://placehold.co/600x600/1a1a2e/b8a9d9?text=Lavender+Cloud",
+        "https://placehold.co/600x600/2a2a3e/b8a9d9?text=Lavender+Spray",
+        "https://placehold.co/600x600/0a0a1e/b8a9d9?text=Lavender+Box"
       ],
       "variants": [
         {
@@ -209,9 +209,9 @@
       "price": 1800,
       "price_hidden": true,
       "images": [
-        "https://via.placeholder.com/600x600/1a1a2e/c9a96e?text=Black+Amber",
-        "https://via.placeholder.com/600x600/2a2a3e/c9a96e?text=Black+Amber+Bottle",
-        "https://via.placeholder.com/600x600/0a0a1e/c9a96e?text=Black+Amber+Box"
+        "https://placehold.co/600x600/1a1a2e/c9a96e?text=Black+Amber",
+        "https://placehold.co/600x600/2a2a3e/c9a96e?text=Black+Amber+Bottle",
+        "https://placehold.co/600x600/0a0a1e/c9a96e?text=Black+Amber+Box"
       ],
       "variants": [
         {

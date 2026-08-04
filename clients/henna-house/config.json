@@ -4,7 +4,7 @@
     "slug": "henna-house",
     "tagline": "100% natural henna, straight from our farm",
     "about": "We grow, dry, and grind our own henna in Palakkad and hand-roll every cone fresh to order. Trusted by 200+ bridal artists across Kerala for deep, long-lasting colour with zero chemicals.",
-    "logo_url": "https://via.placeholder.com/200x200/2d5016/f4a261?text=HH",
+    "logo_url": "https://placehold.co/200x200/2d5016/f4a261?text=HH",
     "primary_color": "#2d5016",
     "secondary_color": "#f4a261",
     "whatsapp_number": "918765432109",
@@ -22,13 +22,13 @@
     {
       "id": "natural-henna",
       "name": "Natural Henna",
-      "image_url": "https://via.placeholder.com/600x600/2d5016/f4a261?text=Natural+Henna",
+      "image_url": "https://placehold.co/600x600/2d5016/f4a261?text=Natural+Henna",
       "display_order": 1
     },
     {
       "id": "accessories",
       "name": "Accessories",
-      "image_url": "https://via.placeholder.com/600x600/2d5016/f4a261?text=Accessories",
+      "image_url": "https://placehold.co/600x600/2d5016/f4a261?text=Accessories",
       "display_order": 2
     }
   ],
@@ -42,9 +42,9 @@
       "price": 120,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Cone",
-        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Cone+Pack",
-        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Stain+Result"
+        "https://placehold.co/600x600/2d5016/f4a261?text=Henna+Cone",
+        "https://placehold.co/600x600/3d6026/f4a261?text=Cone+Pack",
+        "https://placehold.co/600x600/1d4006/f4a261?text=Stain+Result"
       ],
       "variants": [
         {
@@ -77,9 +77,9 @@
       "price": 280,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Powder",
-        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Powder+Pouch",
-        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Powder+Texture"
+        "https://placehold.co/600x600/2d5016/f4a261?text=Henna+Powder",
+        "https://placehold.co/600x600/3d6026/f4a261?text=Powder+Pouch",
+        "https://placehold.co/600x600/1d4006/f4a261?text=Powder+Texture"
       ],
       "variants": [
         {
@@ -111,9 +111,9 @@
       "price": 650,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Kit",
-        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Kit+Contents",
-        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Kit+Designs"
+        "https://placehold.co/600x600/2d5016/f4a261?text=Henna+Kit",
+        "https://placehold.co/600x600/3d6026/f4a261?text=Kit+Contents",
+        "https://placehold.co/600x600/1d4006/f4a261?text=Kit+Designs"
       ],
       "variants": [],
       "in_stock": true,
@@ -137,9 +137,9 @@
       "price": 450,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Glitter+Set",
-        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Glitter+Colours",
-        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Glitter+Design"
+        "https://placehold.co/600x600/2d5016/f4a261?text=Glitter+Set",
+        "https://placehold.co/600x600/3d6026/f4a261?text=Glitter+Colours",
+        "https://placehold.co/600x600/1d4006/f4a261?text=Glitter+Design"
       ],
       "variants": [],
       "in_stock": true,
@@ -162,9 +162,9 @@
       "price": 150,
       "price_hidden": false,
       "images": [
-        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Henna+Paste",
-        "https://via.placeholder.com/600x600/3d6026/f4a261?text=Paste+Jar",
-        "https://via.placeholder.com/600x600/1d4006/f4a261?text=Paste+Applied"
+        "https://placehold.co/600x600/2d5016/f4a261?text=Henna+Paste",
+        "https://placehold.co/600x600/3d6026/f4a261?text=Paste+Jar",
+        "https://placehold.co/600x600/1d4006/f4a261?text=Paste+Applied"
       ],
       "variants": [
         {
