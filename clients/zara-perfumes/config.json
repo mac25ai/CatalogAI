@@ -2,6 +2,7 @@
   "business": {
     "name": "Zara Perfumes",
     "slug": "zara-perfumes",
+    "admin_username": "zaraperfumes",
     "tagline": "Luxury fragrances, Kerala prices",
     "about": "Family-run attar and perfume house in the heart of Calicut since 2009. We blend imported oud and fresh florals into long-lasting fragrances — every bottle is hand-checked before it reaches you.",
     "logo_url": "https://placehold.co/200x200/1a1a2e/c9a96e?text=ZP",

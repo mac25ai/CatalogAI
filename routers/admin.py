@@ -1,12 +1,21 @@
 """Admin panel routes: /admin/[slug]/...
 
 Simple file-based admin. Reads and writes clients/[slug]/config.json directly.
-Auth: slug + password from admin_credentials.json, kept in a session cookie.
+Auth: username (from config) + password, kept in a session cookie.
+
+Password sources, checked in priority order:
+1. clients/[slug]/admin_override.json — written when a client changes their
+   own password from the dashboard; overrides everything below.
+2. ADMIN_PASS_[SLUG] env var (production/Railway).
+3. admin_credentials.json — gitignored local-dev fallback.
 """
 
+import hashlib
+import hmac
 import json
 import os
 import re
+import secrets
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -18,11 +27,45 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 templates = Jinja2Templates(directory="templates")
 
 CREDENTIALS_FILE = "admin_credentials.json"
+PBKDF2_ITERATIONS = 200_000
+
+
+def hash_password(password: str) -> str:
+    salt = secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), PBKDF2_ITERATIONS).hex()
+    return f"{salt}${digest}"
+
+
+def verify_password(password: str, stored: str) -> bool:
+    salt, _, digest = stored.partition("$")
+    if not salt or not digest:
+        return False
+    candidate = hashlib.pbkdf2_hmac("sha256", password.encode(), bytes.fromhex(salt), PBKDF2_ITERATIONS).hex()
+    return hmac.compare_digest(candidate, digest)
+
+
+def override_path(slug: str) -> str:
+    return f"clients/{slug}/admin_override.json"
+
+
+def get_password_override(slug: str) -> str | None:
+    path = override_path(slug)
+    if not os.path.exists(path):
+        return None
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f).get("password_hash")
+
+
+def set_password_override(slug: str, new_password: str):
+    with open(override_path(slug), "w", encoding="utf-8") as f:
+        json.dump({"password_hash": hash_password(new_password)}, f)
 
 
 def check_password(slug: str, password: str) -> bool:
-    """Env var takes priority (production/Railway). Falls back to the
-    gitignored local credentials file so local dev still needs zero env vars."""
+    override = get_password_override(slug)
+    if override is not None:
+        return verify_password(password, override)
+
     env_key = f"ADMIN_PASS_{slug.upper().replace('-', '_')}"
     env_password = os.environ.get(env_key)
     if env_password is not None:
@@ -33,6 +76,14 @@ def check_password(slug: str, password: str) -> bool:
     with open(CREDENTIALS_FILE, "r", encoding="utf-8") as f:
         credentials = json.load(f)
     return credentials.get(slug) == password
+
+
+def expected_username(config: dict, slug: str) -> str:
+    return config["business"].get("admin_username") or slug.replace("-", "")
+
+
+def check_username(config: dict, slug: str, username: str) -> bool:
+    return username.strip().lower() == expected_username(config, slug).lower()
 
 
 def is_logged_in(request: Request, slug: str) -> bool:
@@ -130,6 +181,7 @@ async def login_page(request: Request, slug: str):
             "request": request,
             "slug": slug,
             "business": config["business"],
+            "username": expected_username(config, slug),
             "error": None,
         },
     )
@@ -139,8 +191,9 @@ async def login_page(request: Request, slug: str):
 async def login_submit(request: Request, slug: str):
     config = get_config_or_404(slug)
     form = await request.form()
+    username = form.get("username") or ""
     password = form.get("password") or ""
-    if check_password(slug, password):
+    if check_username(config, slug, username) and check_password(slug, password):
         request.session["admin_slug"] = slug
         return RedirectResponse(url=f"/admin/{slug}/dashboard", status_code=303)
     return templates.TemplateResponse(
@@ -149,7 +202,8 @@ async def login_submit(request: Request, slug: str):
             "request": request,
             "slug": slug,
             "business": config["business"],
-            "error": "Incorrect password. Please try again.",
+            "username": username,
+            "error": "Incorrect username or password. Please try again.",
         },
         status_code=401,
     )
@@ -333,3 +387,60 @@ async def settings_submit(request: Request, slug: str):
             business[field] = (form.get(field) or "").strip()
     save_config(slug, config)
     return RedirectResponse(url=f"/admin/{slug}/settings?saved=1", status_code=303)
+
+
+# ---------------------------------------------------------------- password
+
+
+@router.get("/{slug}/change-password", response_class=HTMLResponse)
+async def change_password_page(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    return templates.TemplateResponse(
+        "admin/change_password.html",
+        {
+            "request": request,
+            "slug": slug,
+            "business": config["business"],
+            "error": None,
+            "saved": request.query_params.get("saved") == "1",
+        },
+    )
+
+
+@router.post("/{slug}/change-password", response_class=HTMLResponse)
+async def change_password_submit(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    form = await request.form()
+    current_password = form.get("current_password") or ""
+    new_password = form.get("new_password") or ""
+    confirm_password = form.get("confirm_password") or ""
+
+    error = None
+    if not check_password(slug, current_password):
+        error = "Current password is incorrect."
+    elif len(new_password) < 8:
+        error = "New password must be at least 8 characters."
+    elif new_password != confirm_password:
+        error = "New password and confirmation don't match."
+
+    if error:
+        return templates.TemplateResponse(
+            "admin/change_password.html",
+            {
+                "request": request,
+                "slug": slug,
+                "business": config["business"],
+                "error": error,
+                "saved": False,
+            },
+            status_code=400,
+        )
+
+    set_password_override(slug, new_password)
+    return RedirectResponse(url=f"/admin/{slug}/change-password?saved=1", status_code=303)

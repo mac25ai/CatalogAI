@@ -2,6 +2,7 @@
   "business": {
     "name": "Henna House",
     "slug": "henna-house",
+    "admin_username": "hennahouse",
     "tagline": "100% natural henna, straight from our farm",
     "about": "We grow, dry, and grind our own henna in Palakkad and hand-roll every cone fresh to order. Trusted by 200+ bridal artists across Kerala for deep, long-lasting colour with zero chemicals.",
     "logo_url": "https://placehold.co/200x200/2d5016/f4a261?text=HH",

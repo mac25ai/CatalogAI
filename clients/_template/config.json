@@ -3,6 +3,7 @@
   "business": {
     "name": "Business Name",
     "slug": "url-safe-slug",
+    "admin_username": "businessname",
     "tagline": "Short punchy tagline",
     "about": "2-3 sentences about the business.",
     "logo_url": "https://i.ibb.co/example/logo.png",

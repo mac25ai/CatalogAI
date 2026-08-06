@@ -2,6 +2,7 @@
   "business": {
     "name": "Momspure",
     "slug": "momspure",
+    "admin_username": "momspure",
     "tagline": "Pure, natural products for mom and baby",
     "about": "Momspure offers safe, natural products for mothers and babies. Full details coming soon — this is placeholder content until real business info is added via the admin Settings page.",
     "logo_url": "https://via.placeholder.com/300x300/2d5016/f4a261?text=Momspure",
