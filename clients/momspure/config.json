@@ -1,0 +1,59 @@
+{
+  "business": {
+    "name": "Momspure",
+    "slug": "momspure",
+    "tagline": "Pure, natural products for mom and baby",
+    "about": "Momspure offers safe, natural products for mothers and babies. Full details coming soon — this is placeholder content until real business info is added via the admin Settings page.",
+    "logo_url": "https://via.placeholder.com/300x300/2d5016/f4a261?text=Momspure",
+    "primary_color": "#2d5016",
+    "secondary_color": "#f4a261",
+    "whatsapp_number": "919999999999",
+    "whatsapp_greeting": "Hi! I just browsed your catalogue. Can you help me?",
+    "location": "Calicut, Kerala",
+    "hours": "Mon–Sat, 10AM–8PM",
+    "instagram_url": "",
+    "facebook_url": "",
+    "google_maps_url": "",
+    "language": "en",
+    "chatbot_name": "Momspure Assistant",
+    "chatbot_greeting": "Hi! Welcome to Momspure 👋 How can I help you today?"
+  },
+  "categories": [
+    {
+      "id": "placeholder-category",
+      "name": "Placeholder Category",
+      "image_url": "https://via.placeholder.com/600x600/2d5016/f4a261?text=Category",
+      "display_order": 1
+    }
+  ],
+  "products": [
+    {
+      "id": "placeholder-product",
+      "name": "Placeholder Product",
+      "category_id": "placeholder-category",
+      "short_description": "Replace with a real product via the admin dashboard.",
+      "long_description": "This is a placeholder product so the dashboard has something to show. Edit or delete it from Admin → Products once real product details are ready.",
+      "price": 0,
+      "price_hidden": true,
+      "images": [
+        "https://via.placeholder.com/600x600/2d5016/f4a261?text=Product"
+      ],
+      "variants": [],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": ["placeholder"]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do you deliver outside Kerala?",
+      "answer": "Yes! We ship all over India. Delivery takes 3–5 business days."
+    },
+    {
+      "question": "What is your return policy?",
+      "answer": "We accept returns within 7 days if the product is unopened."
+    }
+  ]
+}
