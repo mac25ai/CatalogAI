@@ -16,18 +16,21 @@ import json
 import os
 import re
 import secrets
+import time
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from services.config_loader import load_config, save_config
+from services.email_service import send_password_reset_email
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 templates = Jinja2Templates(directory="templates")
 
 CREDENTIALS_FILE = "admin_credentials.json"
 PBKDF2_ITERATIONS = 200_000
+RESET_TOKEN_TTL_SECONDS = 30 * 60
 
 
 def hash_password(password: str) -> str:
@@ -59,6 +62,39 @@ def get_password_override(slug: str) -> str | None:
 def set_password_override(slug: str, new_password: str):
     with open(override_path(slug), "w", encoding="utf-8") as f:
         json.dump({"password_hash": hash_password(new_password)}, f)
+
+
+def reset_token_path(slug: str) -> str:
+    return f"clients/{slug}/reset_token.json"
+
+
+def create_reset_token(slug: str) -> str:
+    """Generate a reset token, store only its hash + expiry, return the raw token."""
+    token = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    with open(reset_token_path(slug), "w", encoding="utf-8") as f:
+        json.dump({"token_hash": token_hash, "expires_at": time.time() + RESET_TOKEN_TTL_SECONDS}, f)
+    return token
+
+
+def verify_reset_token(slug: str, token: str) -> bool:
+    if not token:
+        return False
+    path = reset_token_path(slug)
+    if not os.path.exists(path):
+        return False
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if time.time() > data.get("expires_at", 0):
+        return False
+    candidate = hashlib.sha256(token.encode()).hexdigest()
+    return hmac.compare_digest(candidate, data.get("token_hash", ""))
+
+
+def clear_reset_token(slug: str):
+    path = reset_token_path(slug)
+    if os.path.exists(path):
+        os.remove(path)
 
 
 def check_password(slug: str, password: str) -> bool:
@@ -183,6 +219,7 @@ async def login_page(request: Request, slug: str):
             "business": config["business"],
             "username": expected_username(config, slug),
             "error": None,
+            "reset": request.query_params.get("reset") == "1",
         },
     )
 
@@ -204,6 +241,7 @@ async def login_submit(request: Request, slug: str):
             "business": config["business"],
             "username": username,
             "error": "Incorrect username or password. Please try again.",
+            "reset": False,
         },
         status_code=401,
     )
@@ -380,7 +418,7 @@ async def settings_submit(request: Request, slug: str):
         "name", "tagline", "about", "logo_url", "primary_color",
         "secondary_color", "whatsapp_number", "whatsapp_greeting", "location",
         "hours", "instagram_url", "facebook_url", "google_maps_url",
-        "language", "chatbot_name", "chatbot_greeting",
+        "language", "chatbot_name", "chatbot_greeting", "admin_email",
     ]
     for field in editable:
         if field in form:
@@ -444,3 +482,87 @@ async def change_password_submit(request: Request, slug: str):
 
     set_password_override(slug, new_password)
     return RedirectResponse(url=f"/admin/{slug}/change-password?saved=1", status_code=303)
+
+
+# ---------------------------------------------------------------- forgot / reset password
+
+
+@router.get("/{slug}/forgot-password", response_class=HTMLResponse)
+async def forgot_password_page(request: Request, slug: str):
+    config = get_config_or_404(slug)
+    return templates.TemplateResponse(
+        "admin/forgot_password.html",
+        {"request": request, "slug": slug, "business": config["business"], "sent": False},
+    )
+
+
+@router.post("/{slug}/forgot-password", response_class=HTMLResponse)
+async def forgot_password_submit(request: Request, slug: str):
+    config = get_config_or_404(slug)
+    form = await request.form()
+    submitted_email = (form.get("email") or "").strip().lower()
+
+    on_file_email = (config["business"].get("admin_email") or "").strip().lower()
+    if on_file_email and submitted_email == on_file_email:
+        token = create_reset_token(slug)
+        reset_url = str(request.base_url).rstrip("/") + f"/admin/{slug}/reset-password?token={token}"
+        send_password_reset_email(config["business"]["name"], on_file_email, reset_url)
+
+    # Always the same response, whether or not the email matched, so this
+    # never reveals whether a recovery email is configured for this account.
+    return templates.TemplateResponse(
+        "admin/forgot_password.html",
+        {"request": request, "slug": slug, "business": config["business"], "sent": True},
+    )
+
+
+@router.get("/{slug}/reset-password", response_class=HTMLResponse)
+async def reset_password_page(request: Request, slug: str):
+    config = get_config_or_404(slug)
+    token = request.query_params.get("token") or ""
+    valid = verify_reset_token(slug, token)
+    return templates.TemplateResponse(
+        "admin/reset_password.html",
+        {
+            "request": request,
+            "slug": slug,
+            "business": config["business"],
+            "valid": valid,
+            "token": token,
+            "error": None,
+        },
+        status_code=200 if valid else 400,
+    )
+
+
+@router.post("/{slug}/reset-password", response_class=HTMLResponse)
+async def reset_password_submit(request: Request, slug: str):
+    config = get_config_or_404(slug)
+    form = await request.form()
+    token = form.get("token") or ""
+    new_password = form.get("new_password") or ""
+    confirm_password = form.get("confirm_password") or ""
+
+    if not verify_reset_token(slug, token):
+        return templates.TemplateResponse(
+            "admin/reset_password.html",
+            {"request": request, "slug": slug, "business": config["business"], "valid": False, "token": token, "error": None},
+            status_code=400,
+        )
+
+    error = None
+    if len(new_password) < 8:
+        error = "New password must be at least 8 characters."
+    elif new_password != confirm_password:
+        error = "New password and confirmation don't match."
+
+    if error:
+        return templates.TemplateResponse(
+            "admin/reset_password.html",
+            {"request": request, "slug": slug, "business": config["business"], "valid": True, "token": token, "error": error},
+            status_code=400,
+        )
+
+    set_password_override(slug, new_password)
+    clear_reset_token(slug)
+    return RedirectResponse(url=f"/admin/{slug}/login?reset=1", status_code=303)
