@@ -67,10 +67,19 @@ def send_password_reset_email(business_name: str, to_email: str, reset_url: str)
     )
 
     try:
-        with smtplib.SMTP(config.host, config.port, timeout=10) as smtp:
-            smtp.starttls()
-            smtp.login(config.user, config.password)
-            smtp.send_message(message)
+        # Port 465 is implicit TLS (the connection is encrypted from the
+        # start) -- some providers (e.g. GoDaddy/Titan's smtpout.secureserver.net)
+        # only support this, not STARTTLS on 587. Branch on the standard
+        # port number rather than requiring a separate config flag.
+        if config.port == 465:
+            with smtplib.SMTP_SSL(config.host, config.port, timeout=10) as smtp:
+                smtp.login(config.user, config.password)
+                smtp.send_message(message)
+        else:
+            with smtplib.SMTP(config.host, config.port, timeout=10) as smtp:
+                smtp.starttls()
+                smtp.login(config.user, config.password)
+                smtp.send_message(message)
         return True
     except Exception:
         logger.exception("Failed to send password reset email to %s", to_email)
