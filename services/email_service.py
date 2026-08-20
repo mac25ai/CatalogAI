@@ -73,8 +73,10 @@ def send_password_reset_email(business_name: str, to_email: str, reset_url: str)
         # port number rather than requiring a separate config flag.
         if config.port == 465:
             with smtplib.SMTP_SSL(config.host, config.port, timeout=10) as smtp:
+                smtp.set_debuglevel(1)  # TEMP: diagnosing a silent-delivery issue
                 smtp.login(config.user, config.password)
-                smtp.send_message(message)
+                result = smtp.send_message(message)
+                logger.warning("TEMP DEBUG send_message result: %r", result)
         else:
             with smtplib.SMTP(config.host, config.port, timeout=10) as smtp:
                 smtp.starttls()
