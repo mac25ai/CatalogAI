@@ -543,6 +543,7 @@ async def settings_submit(request: Request, slug: str):
         "secondary_color", "whatsapp_number", "whatsapp_greeting", "location",
         "hours", "instagram_url", "facebook_url", "google_maps_url",
         "language", "chatbot_name", "chatbot_greeting", "admin_email",
+        "upi_id",
     ]
     for field in editable:
         if field in form:

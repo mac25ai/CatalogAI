@@ -17,7 +17,7 @@ from pydantic import BaseModel
 
 from services.config_loader import load_config, save_config
 from services.orders import add_order
-from services.payment_service import create_payment_link
+from services.payment_service import build_upi_payment_link, create_payment_link
 
 router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
@@ -189,9 +189,16 @@ def try_confirm_order(product_id: str, quantity: int, message: str, history: lis
     save_config(slug, config)
 
     link = create_payment_link(amount, items_desc, "WhatsApp customer", phone)
-    if link is None:
-        return "I've noted your order — our team will follow up with a payment link on WhatsApp shortly."
-    return f"Here's your payment link: {link}"
+    if link:
+        return f"Here's your payment link: {link}"
+
+    upi_id = (config.get("business", {}).get("upi_id") or "").strip()
+    if upi_id:
+        payee_name = config.get("business", {}).get("name", "Shop")
+        upi_link = build_upi_payment_link(upi_id, payee_name, amount, items_desc)
+        return f"Please pay ₹{amount} using this link (opens your UPI app with the amount filled in): {upi_link}"
+
+    return "I've noted your order — our team will follow up with a payment link on WhatsApp shortly."
 
 
 def mock_response(message: str, config: dict, slug: str) -> dict:
