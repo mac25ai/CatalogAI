@@ -26,6 +26,7 @@ from fastapi.templating import Jinja2Templates
 from routers.chatbot import unmatched_queries_path
 from services.config_loader import load_config, save_config
 from services.email_service import send_password_reset_email
+from services.orders import ORDER_STATUSES, add_order
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 templates = Jinja2Templates(directory="templates")
@@ -158,17 +159,6 @@ def unique_product_id(config: dict, base: str) -> str:
     return f"{base}-{n}"
 
 
-ORDER_STATUSES = ("Received", "Packed", "Shipped", "Delivered")
-
-
-def unique_order_id(config: dict, base: str) -> str:
-    existing = {o["id"] for o in config.get("orders", [])}
-    if base not in existing:
-        return base
-    n = 2
-    while f"{base}-{n}" in existing:
-        n += 1
-    return f"{base}-{n}"
 
 
 async def parse_product_form(request: Request, config: dict) -> dict:
@@ -490,15 +480,13 @@ async def order_new_submit(request: Request, slug: str):
     customer_phone = (form.get("customer_phone") or "").strip()
     items = (form.get("items") or "").strip()
 
-    order = {
-        "id": unique_order_id(config, slugify(customer_name or "order")),
-        "customer_name": customer_name,
-        "customer_phone": customer_phone,
-        "items": items,
-        "status": ORDER_STATUSES[0],
-        "created_at": time.time(),
-    }
-    config.setdefault("orders", []).append(order)
+    add_order(
+        config,
+        id_base=slugify(customer_name or "order"),
+        customer_name=customer_name,
+        customer_phone=customer_phone,
+        items=items,
+    )
     save_config(slug, config)
     return RedirectResponse(url=f"/admin/{slug}/orders", status_code=303)
 
