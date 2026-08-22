@@ -17,11 +17,13 @@ import os
 import re
 import secrets
 import time
+from collections import Counter
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from routers.chatbot import unmatched_queries_path
 from services.config_loader import load_config, save_config
 from services.email_service import send_password_reset_email
 
@@ -31,6 +33,7 @@ templates = Jinja2Templates(directory="templates")
 CREDENTIALS_FILE = "admin_credentials.json"
 PBKDF2_ITERATIONS = 200_000
 RESET_TOKEN_TTL_SECONDS = 30 * 60
+INTEREST_REPORT_WINDOW_DAYS = 7
 
 
 def hash_password(password: str) -> str:
@@ -278,6 +281,50 @@ async def dashboard(request: Request, slug: str):
             "products": products,
             "category_map": config["_category_map"],
             "stats": stats,
+        },
+    )
+
+
+# ---------------------------------------------------------------- reports
+
+
+def load_recent_unmatched_queries(slug: str, days: int = INTEREST_REPORT_WINDOW_DAYS) -> list[dict]:
+    path = unmatched_queries_path(slug)
+    if not os.path.exists(path):
+        return []
+    cutoff = time.time() - days * 86400
+    entries = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if entry.get("timestamp", 0) >= cutoff and entry.get("query"):
+                entries.append(entry)
+    return entries
+
+
+@router.get("/{slug}/reports/interest", response_class=HTMLResponse)
+async def interest_report(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    entries = load_recent_unmatched_queries(slug)
+    counts = Counter(entry["query"].strip().lower() for entry in entries)
+    return templates.TemplateResponse(
+        "admin/interest_report.html",
+        {
+            "request": request,
+            "slug": slug,
+            "business": config["business"],
+            "top_queries": counts.most_common(50),
+            "total_queries": len(entries),
+            "window_days": INTEREST_REPORT_WINDOW_DAYS,
         },
     )
 

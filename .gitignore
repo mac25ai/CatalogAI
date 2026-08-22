@@ -5,4 +5,5 @@ __pycache__/
 admin_credentials.json
 clients/*/admin_override.json
 clients/*/reset_token.json
+clients/*/unmatched_queries.jsonl
 .claude/settings.local.json
