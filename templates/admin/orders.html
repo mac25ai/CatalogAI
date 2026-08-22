@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders — {{ business.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <style>
+    :root {
+      --primary: {{ business.primary_color }};
+      --secondary: {{ business.secondary_color }};
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen antialiased">
+
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <h1 class="font-bold text-base truncate">
+        <span style="color: var(--primary)">Admin</span>
+        <span class="text-gray-400 font-normal">—</span>
+        {{ business.name }}
+      </h1>
+      <div class="flex items-center gap-2 text-sm flex-shrink-0">
+        <a href="/admin/{{ slug }}/dashboard"
+           class="text-gray-600 hover:text-gray-900 px-3 py-2 min-h-[44px] flex items-center">Dashboard</a>
+        <a href="/admin/{{ slug }}/logout"
+           class="text-red-600 hover:text-red-700 px-3 py-2 min-h-[44px] flex items-center">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="font-bold text-lg">Orders</h2>
+        <p class="text-sm text-gray-500 mt-1">Add orders you receive on WhatsApp here so customers can ask the chatbot for status updates.</p>
+      </div>
+      <a href="/admin/{{ slug }}/order/new"
+         class="inline-flex items-center gap-1.5 text-white text-sm font-semibold px-4 py-2.5 rounded-lg min-h-[44px] flex-shrink-0"
+         style="background-color: var(--primary)">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Add Order
+      </a>
+    </div>
+
+    {% if orders %}
+    <div class="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+      <table class="w-full text-sm min-w-[640px]">
+        <thead>
+          <tr class="border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
+            <th class="px-4 py-3 font-semibold">Customer</th>
+            <th class="px-4 py-3 font-semibold">Items</th>
+            <th class="px-4 py-3 font-semibold">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr class="border-b border-gray-100 last:border-0">
+            <td class="px-4 py-3">
+              <p class="font-semibold">{{ order.customer_name }}</p>
+              <p class="text-xs text-gray-400">{{ order.customer_phone }}</p>
+            </td>
+            <td class="px-4 py-3 text-gray-600 max-w-xs">{{ order['items'] }}</td>
+            <td class="px-4 py-3">
+              <select data-order-id="{{ order.id }}" onchange="updateStatus(this)"
+                      class="order-status text-xs font-semibold border border-gray-300 rounded-lg px-2 py-1.5 min-h-[32px] bg-white">
+                {% for status in statuses %}
+                <option value="{{ status }}" {{ 'selected' if order.status == status }}>{{ status }}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500 text-sm">
+      No orders yet. Add one after you receive it on WhatsApp.
+    </div>
+    {% endif %}
+
+  </main>
+
+  <script>
+    async function updateStatus(select) {
+      const orderId = select.dataset.orderId;
+      const newStatus = select.value;
+      select.disabled = true;
+      try {
+        const res = await fetch(`/admin/{{ slug }}/order/${orderId}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `status=${encodeURIComponent(newStatus)}`,
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+      } catch (e) {
+        alert('Could not update status. Please refresh and try again.');
+      }
+      select.disabled = false;
+    }
+  </script>
+
+</body>
+</html>

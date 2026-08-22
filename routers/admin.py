@@ -158,6 +158,19 @@ def unique_product_id(config: dict, base: str) -> str:
     return f"{base}-{n}"
 
 
+ORDER_STATUSES = ("Received", "Packed", "Shipped", "Delivered")
+
+
+def unique_order_id(config: dict, base: str) -> str:
+    existing = {o["id"] for o in config.get("orders", [])}
+    if base not in existing:
+        return base
+    n = 2
+    while f"{base}-{n}" in existing:
+        n += 1
+    return f"{base}-{n}"
+
+
 async def parse_product_form(request: Request, config: dict) -> dict:
     """Build a product dict from the submitted add/edit form."""
     form = await request.form()
@@ -430,6 +443,82 @@ async def product_toggle_stock(request: Request, slug: str, product_id: str):
             save_config(slug, config)
             return JSONResponse({"id": product_id, "in_stock": p["in_stock"]})
     return JSONResponse({"error": "Product not found"}, status_code=404)
+
+
+# ---------------------------------------------------------------- orders
+
+
+@router.get("/{slug}/orders", response_class=HTMLResponse)
+async def orders_list(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    orders = sorted(config.get("orders", []), key=lambda o: o.get("created_at", 0), reverse=True)
+    return templates.TemplateResponse(
+        "admin/orders.html",
+        {
+            "request": request,
+            "slug": slug,
+            "business": config["business"],
+            "orders": orders,
+            "statuses": ORDER_STATUSES,
+        },
+    )
+
+
+@router.get("/{slug}/order/new", response_class=HTMLResponse)
+async def order_new_page(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    return templates.TemplateResponse(
+        "admin/order_form.html",
+        {"request": request, "slug": slug, "business": config["business"]},
+    )
+
+
+@router.post("/{slug}/order/new")
+async def order_new_submit(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    form = await request.form()
+    customer_name = (form.get("customer_name") or "").strip()
+    customer_phone = (form.get("customer_phone") or "").strip()
+    items = (form.get("items") or "").strip()
+
+    order = {
+        "id": unique_order_id(config, slugify(customer_name or "order")),
+        "customer_name": customer_name,
+        "customer_phone": customer_phone,
+        "items": items,
+        "status": ORDER_STATUSES[0],
+        "created_at": time.time(),
+    }
+    config.setdefault("orders", []).append(order)
+    save_config(slug, config)
+    return RedirectResponse(url=f"/admin/{slug}/orders", status_code=303)
+
+
+@router.post("/{slug}/order/{order_id}/status")
+async def order_update_status(request: Request, slug: str, order_id: str):
+    """AJAX endpoint: set an order's status and return the new state (no page reload)."""
+    if not is_logged_in(request, slug):
+        return JSONResponse({"error": "Not authenticated"}, status_code=401)
+    form = await request.form()
+    new_status = form.get("status") or ""
+    if new_status not in ORDER_STATUSES:
+        return JSONResponse({"error": "Invalid status"}, status_code=400)
+    config = get_config_or_404(slug)
+    for order in config.get("orders", []):
+        if order["id"] == order_id:
+            order["status"] = new_status
+            save_config(slug, config)
+            return JSONResponse({"id": order_id, "status": new_status})
+    return JSONResponse({"error": "Order not found"}, status_code=404)
 
 
 # ---------------------------------------------------------------- settings

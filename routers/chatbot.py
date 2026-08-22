@@ -8,6 +8,7 @@ still works with zero env vars.
 
 import json
 import os
+import re
 import time
 
 from fastapi import APIRouter, HTTPException
@@ -20,6 +21,11 @@ router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
 GROQ_MODEL = "llama-3.3-70b-versatile"
 ORDER_KEYWORDS = ("order", "buy", "purchase", "price", "cost", "want")
+
+# "Where's my order" detection — handled by a direct data lookup, not the
+# LLM, so it works identically in mock mode and costs no Groq call.
+STATUS_PHRASES = ("order status", "track my order", "track order", "where is my order", "where's my order")
+PHONE_PATTERN = re.compile(r"\d{10,15}")
 
 # Appended by the model to its own reply when it can't answer from the
 # product/FAQ context given — lets us log what customers actually asked
@@ -91,6 +97,48 @@ def format_price(product: dict) -> str:
     if product.get("price_hidden"):
         return "Contact for price"
     return f"₹{product.get('price', 0)}"
+
+
+def normalize_phone(phone: str) -> str:
+    digits = re.sub(r"\D", "", phone)
+    return digits[-10:] if len(digits) >= 10 else digits
+
+
+def is_order_status_query(message: str) -> bool:
+    message_lower = message.lower()
+    if any(phrase in message_lower for phrase in STATUS_PHRASES):
+        return True
+    return "order" in message_lower and any(word in message_lower for word in ("status", "track", "where"))
+
+
+def try_order_status_lookup(message: str, config: dict) -> dict | None:
+    """Deterministic "where's my order" lookup against config["orders"].
+
+    Returns None if the message isn't an order-status query at all, so the
+    caller falls through to the normal chat flow.
+    """
+    if not is_order_status_query(message):
+        return None
+
+    match = PHONE_PATTERN.search(message)
+    if not match:
+        return {
+            "reply": "Sure! Please share the WhatsApp number you used to place the order, and I'll check its status.",
+            "show_whatsapp": False,
+        }
+
+    phone = normalize_phone(match.group())
+    for order in config.get("_order_map", {}).values():
+        if normalize_phone(order.get("customer_phone", "")) == phone:
+            return {
+                "reply": f"Your order ({order.get('items', 'your order')}) is currently: {order.get('status', 'Received')}.",
+                "show_whatsapp": False,
+            }
+
+    return {
+        "reply": "I couldn't find an order under that number. Want me to connect you with us on WhatsApp to check?",
+        "show_whatsapp": True,
+    }
 
 
 def mock_response(message: str, config: dict, slug: str) -> dict:
@@ -217,6 +265,9 @@ async def chat(slug: str, body: ChatRequest):
         raise HTTPException(status_code=404, detail="Shop not found")
     if is_leak_attempt(body.message):
         return DEFLECT_REPLY
+    status_reply = try_order_status_lookup(body.message, config)
+    if status_reply is not None:
+        return status_reply
     client = get_groq_client()
     if client is None:
         return mock_response(body.message, config, slug)

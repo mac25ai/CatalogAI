@@ -35,6 +35,7 @@ def load_config(slug: str) -> Optional[dict]:
     # Build lookup maps for fast access
     config["_category_map"] = {c["id"]: c for c in config["categories"]}
     config["_product_map"] = {p["id"]: p for p in config["products"]}
+    config["_order_map"] = {o["id"]: o for o in config.get("orders", [])}
 
     config_cache[slug] = config
     return config
