@@ -21,7 +21,7 @@ from services.payment_service import build_upi_payment_link, create_payment_link
 
 router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 ORDER_KEYWORDS = ("order", "buy", "purchase", "price", "cost", "want")
 
 # "Where's my order" detection — handled by a direct data lookup, not the
@@ -305,6 +305,9 @@ def real_response(message: str, config: dict, history: list, client: Groq, slug:
             messages=messages,
             max_tokens=300,
             temperature=0.7,
+            reasoning_effort="low",  # gpt-oss is a reasoning model; without this,
+            # its internal "thinking" tokens can eat the whole max_tokens budget
+            # and leave an empty reply -- low effort suits a grounded FAQ bot.
         )
     except APIStatusError:
         # Groq outage or rate limit — fall back to the deterministic mock
