@@ -1,0 +1,84 @@
+{
+  "business": {
+    "name": "Staging Demo Store",
+    "slug": "staging-demo",
+    "admin_username": "stagingdemo",
+    "admin_email": "",
+    "tagline": "Internal test client for feature/new-ai-features",
+    "about": "Disposable demo shop used only to test new CatalogAI features on the staging environment. Not a real client.",
+    "logo_url": "https://i.ibb.co/example/logo.png",
+    "primary_color": "#1a1a2e",
+    "secondary_color": "#e94560",
+    "whatsapp_number": "919876543210",
+    "whatsapp_greeting": "Hi! I just browsed your catalogue. Can you help me?",
+    "location": "Calicut, Kerala",
+    "hours": "Mon–Sat, 10AM–8PM",
+    "instagram_url": "",
+    "facebook_url": "",
+    "google_maps_url": "https://maps.google.com/?q=Calicut+Kerala",
+    "language": "en",
+    "chatbot_name": "Demo Assistant",
+    "chatbot_greeting": "Hi! Welcome 👋 How can I help you today?"
+  },
+  "categories": [
+    {
+      "id": "test-category",
+      "name": "Test Category",
+      "image_url": "https://i.ibb.co/example/category.jpg",
+      "display_order": 1
+    }
+  ],
+  "products": [
+    {
+      "id": "test-product-1",
+      "name": "Test Product One",
+      "category_id": "test-category",
+      "short_description": "A sample product for testing new features.",
+      "long_description": "A sample product used to exercise chat, search, and order flows while testing new CatalogAI features on staging.",
+      "price": 500,
+      "price_hidden": false,
+      "images": [
+        "https://i.ibb.co/example/product-1.jpg"
+      ],
+      "variants": [
+        {
+          "name": "Size",
+          "options": ["Small", "Medium", "Large"]
+        }
+      ],
+      "in_stock": true,
+      "featured": true,
+      "bestseller": false,
+      "min_order_qty": 1,
+      "tags": ["test", "demo"]
+    },
+    {
+      "id": "test-product-2",
+      "name": "Test Product Two",
+      "category_id": "test-category",
+      "short_description": "A second sample product for testing.",
+      "long_description": "A second sample product used for exercising search and catalogue features on staging.",
+      "price": 1200,
+      "price_hidden": false,
+      "images": [
+        "https://i.ibb.co/example/product-2.jpg"
+      ],
+      "variants": [],
+      "in_stock": true,
+      "featured": false,
+      "bestseller": true,
+      "min_order_qty": 1,
+      "tags": ["test", "demo"]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do you deliver outside Kerala?",
+      "answer": "Yes! We ship all over India. Delivery takes 3–5 business days."
+    },
+    {
+      "question": "What is your return policy?",
+      "answer": "We accept returns within 7 days if the product is unopened."
+    }
+  ]
+}
