@@ -305,9 +305,11 @@ def real_response(message: str, config: dict, history: list, client: Groq, slug:
             messages=messages,
             max_tokens=300,
             temperature=0.7,
-            reasoning_effort="low",  # gpt-oss is a reasoning model; without this,
-            # its internal "thinking" tokens can eat the whole max_tokens budget
-            # and leave an empty reply -- low effort suits a grounded FAQ bot.
+            # gpt-oss is a reasoning model; without this, its internal
+            # "thinking" tokens can eat the whole max_tokens budget and leave
+            # an empty reply. The installed groq SDK (0.11.0) predates a typed
+            # reasoning_effort param, so it goes through extra_body instead.
+            extra_body={"reasoning_effort": "low"},
         )
     except APIStatusError:
         # Groq outage or rate limit — fall back to the deterministic mock
