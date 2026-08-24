@@ -12,6 +12,7 @@
     "secondary_color": "#e94560",
     "whatsapp_number": "919876543210",
     "whatsapp_greeting": "Hi! I just browsed your catalogue. Can you help me?",
+    "upi_id": "",
     "location": "Calicut, Kerala",
     "hours": "Mon–Sat, 10AM–8PM",
     "instagram_url": "https://instagram.com/example",
@@ -64,5 +65,6 @@
       "question": "What is your return policy?",
       "answer": "We accept returns within 7 days if the product is unopened."
     }
-  ]
+  ],
+  "orders": []
 }

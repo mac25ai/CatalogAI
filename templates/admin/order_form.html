@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Order — {{ business.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <style>
+    :root {
+      --primary: {{ business.primary_color }};
+      --secondary: {{ business.secondary_color }};
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen antialiased">
+
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <h1 class="font-bold text-base truncate">Add Order</h1>
+      <a href="/admin/{{ slug }}/orders"
+         class="text-sm text-gray-600 hover:text-gray-900 px-3 py-2 min-h-[44px] flex items-center">← Orders</a>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 py-6">
+    <p class="text-sm text-gray-500 mb-4">
+      Enter the order you received on WhatsApp so you (and your customer, if they ask) can track its status here.
+    </p>
+    <form method="post" action="/admin/{{ slug }}/order/new"
+          class="bg-white rounded-xl border border-gray-200 p-5 space-y-5">
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Customer name *</label>
+        <input type="text" name="customer_name" required
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Customer WhatsApp number *</label>
+        <input type="text" name="customer_phone" required placeholder="e.g. 919876543210"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm min-h-[48px]">
+        <p class="text-xs text-gray-400 mt-1">Used so the chatbot can match this order when the customer asks "where is my order".</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Items *</label>
+        <textarea name="items" rows="3" required placeholder="e.g. 2x Royal Oud 50ml"
+                  class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm"></textarea>
+      </div>
+
+      <button type="submit"
+              class="w-full text-white font-semibold py-3.5 rounded-lg min-h-[48px]"
+              style="background-color: var(--primary)">
+        Save Order
+      </button>
+    </form>
+  </main>
+
+</body>
+</html>

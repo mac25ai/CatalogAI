@@ -17,13 +17,16 @@ import os
 import re
 import secrets
 import time
+from collections import Counter
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from routers.chatbot import unmatched_queries_path
 from services.config_loader import load_config, save_config
 from services.email_service import send_password_reset_email
+from services.orders import ORDER_STATUSES, add_order
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 templates = Jinja2Templates(directory="templates")
@@ -31,6 +34,7 @@ templates = Jinja2Templates(directory="templates")
 CREDENTIALS_FILE = "admin_credentials.json"
 PBKDF2_ITERATIONS = 200_000
 RESET_TOKEN_TTL_SECONDS = 30 * 60
+INTEREST_REPORT_WINDOW_DAYS = 7
 
 
 def hash_password(password: str) -> str:
@@ -153,6 +157,8 @@ def unique_product_id(config: dict, base: str) -> str:
     while f"{base}-{n}" in existing:
         n += 1
     return f"{base}-{n}"
+
+
 
 
 async def parse_product_form(request: Request, config: dict) -> dict:
@@ -282,6 +288,50 @@ async def dashboard(request: Request, slug: str):
     )
 
 
+# ---------------------------------------------------------------- reports
+
+
+def load_recent_unmatched_queries(slug: str, days: int = INTEREST_REPORT_WINDOW_DAYS) -> list[dict]:
+    path = unmatched_queries_path(slug)
+    if not os.path.exists(path):
+        return []
+    cutoff = time.time() - days * 86400
+    entries = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if entry.get("timestamp", 0) >= cutoff and entry.get("query"):
+                entries.append(entry)
+    return entries
+
+
+@router.get("/{slug}/reports/interest", response_class=HTMLResponse)
+async def interest_report(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    entries = load_recent_unmatched_queries(slug)
+    counts = Counter(entry["query"].strip().lower() for entry in entries)
+    return templates.TemplateResponse(
+        "admin/interest_report.html",
+        {
+            "request": request,
+            "slug": slug,
+            "business": config["business"],
+            "top_queries": counts.most_common(50),
+            "total_queries": len(entries),
+            "window_days": INTEREST_REPORT_WINDOW_DAYS,
+        },
+    )
+
+
 # ---------------------------------------------------------------- products
 
 
@@ -385,6 +435,80 @@ async def product_toggle_stock(request: Request, slug: str, product_id: str):
     return JSONResponse({"error": "Product not found"}, status_code=404)
 
 
+# ---------------------------------------------------------------- orders
+
+
+@router.get("/{slug}/orders", response_class=HTMLResponse)
+async def orders_list(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    orders = sorted(config.get("orders", []), key=lambda o: o.get("created_at", 0), reverse=True)
+    return templates.TemplateResponse(
+        "admin/orders.html",
+        {
+            "request": request,
+            "slug": slug,
+            "business": config["business"],
+            "orders": orders,
+            "statuses": ORDER_STATUSES,
+        },
+    )
+
+
+@router.get("/{slug}/order/new", response_class=HTMLResponse)
+async def order_new_page(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    return templates.TemplateResponse(
+        "admin/order_form.html",
+        {"request": request, "slug": slug, "business": config["business"]},
+    )
+
+
+@router.post("/{slug}/order/new")
+async def order_new_submit(request: Request, slug: str):
+    redirect = require_login(request, slug)
+    if redirect:
+        return redirect
+    config = get_config_or_404(slug)
+    form = await request.form()
+    customer_name = (form.get("customer_name") or "").strip()
+    customer_phone = (form.get("customer_phone") or "").strip()
+    items = (form.get("items") or "").strip()
+
+    add_order(
+        config,
+        id_base=slugify(customer_name or "order"),
+        customer_name=customer_name,
+        customer_phone=customer_phone,
+        items=items,
+    )
+    save_config(slug, config)
+    return RedirectResponse(url=f"/admin/{slug}/orders", status_code=303)
+
+
+@router.post("/{slug}/order/{order_id}/status")
+async def order_update_status(request: Request, slug: str, order_id: str):
+    """AJAX endpoint: set an order's status and return the new state (no page reload)."""
+    if not is_logged_in(request, slug):
+        return JSONResponse({"error": "Not authenticated"}, status_code=401)
+    form = await request.form()
+    new_status = form.get("status") or ""
+    if new_status not in ORDER_STATUSES:
+        return JSONResponse({"error": "Invalid status"}, status_code=400)
+    config = get_config_or_404(slug)
+    for order in config.get("orders", []):
+        if order["id"] == order_id:
+            order["status"] = new_status
+            save_config(slug, config)
+            return JSONResponse({"id": order_id, "status": new_status})
+    return JSONResponse({"error": "Order not found"}, status_code=404)
+
+
 # ---------------------------------------------------------------- settings
 
 
@@ -419,6 +543,7 @@ async def settings_submit(request: Request, slug: str):
         "secondary_color", "whatsapp_number", "whatsapp_greeting", "location",
         "hours", "instagram_url", "facebook_url", "google_maps_url",
         "language", "chatbot_name", "chatbot_greeting", "admin_email",
+        "upi_id",
     ]
     for field in editable:
         if field in form:

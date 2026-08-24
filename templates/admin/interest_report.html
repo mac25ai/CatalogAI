@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What Customers Wanted — {{ business.name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/custom.css">
+  <style>
+    :root {
+      --primary: {{ business.primary_color }};
+      --secondary: {{ business.secondary_color }};
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen antialiased">
+
+  <!-- Admin header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <h1 class="font-bold text-base truncate">
+        <span style="color: var(--primary)">Admin</span>
+        <span class="text-gray-400 font-normal">—</span>
+        {{ business.name }}
+      </h1>
+      <div class="flex items-center gap-2 text-sm flex-shrink-0">
+        <a href="/admin/{{ slug }}/dashboard"
+           class="text-gray-600 hover:text-gray-900 px-3 py-2 min-h-[44px] flex items-center">Dashboard</a>
+        <a href="/admin/{{ slug }}/logout"
+           class="text-red-600 hover:text-red-700 px-3 py-2 min-h-[44px] flex items-center">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+
+    <div class="mb-6">
+      <h2 class="font-bold text-lg">What Customers Wanted</h2>
+      <p class="text-sm text-gray-500 mt-1">
+        Questions your chatbot couldn't answer from your current catalogue or FAQs, in the last {{ window_days }} days
+        ({{ total_queries }} total{{ 's' if total_queries != 1 else '' }}). Consider adding a product, FAQ, or stock update for the frequent ones.
+      </p>
+    </div>
+
+    {% if top_queries %}
+    <div class="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+      <table class="w-full text-sm min-w-[480px]">
+        <thead>
+          <tr class="border-b border-gray-200 text-left text-xs text-gray-500 uppercase tracking-wide">
+            <th class="px-4 py-3 font-semibold">Customer asked</th>
+            <th class="px-4 py-3 font-semibold text-right">Times</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for query, count in top_queries %}
+          <tr class="border-b border-gray-100 last:border-0">
+            <td class="px-4 py-3">{{ query }}</td>
+            <td class="px-4 py-3 text-right font-semibold" style="color: var(--primary)">{{ count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500 text-sm">
+      No unanswered questions in the last {{ window_days }} days. 🎉
+    </div>
+    {% endif %}
+
+  </main>
+
+</body>
+</html>

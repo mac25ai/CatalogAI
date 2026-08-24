@@ -93,6 +93,14 @@
       </div>
 
       <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1.5">UPI ID (for chat payment links)</label>
+        <input type="text" name="upi_id" value="{{ business.upi_id or '' }}"
+               placeholder="yourshop@okhdfcbank"
+               class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono min-h-[48px]">
+        <p class="text-xs text-gray-400 mt-1">The same ID behind your existing GPay/PhonePe/Paytm QR code. When a customer confirms an order in chat, they'll get a link that opens their UPI app with the amount already filled in.</p>
+      </div>
+
+      <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1.5">WhatsApp greeting message</label>
         <textarea name="whatsapp_greeting" rows="2"
                   class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm">{{ business.whatsapp_greeting }}</textarea>
