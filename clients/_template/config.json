@@ -66,5 +66,6 @@
       "answer": "We accept returns within 7 days if the product is unopened."
     }
   ],
-  "orders": []
+  "orders": [],
+  "usage": {"date": "", "count": 0}
 }

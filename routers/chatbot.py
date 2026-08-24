@@ -10,6 +10,7 @@ import json
 import os
 import re
 import time
+from datetime import date
 
 from fastapi import APIRouter, HTTPException
 from groq import APIStatusError, Groq
@@ -23,6 +24,16 @@ router = APIRouter(prefix="/api/chat", tags=["chatbot"])
 
 GROQ_MODEL = "openai/gpt-oss-120b"
 ORDER_KEYWORDS = ("order", "buy", "purchase", "price", "cost", "want")
+
+# Per-store ceiling on chat messages per calendar day (UTC), to bound LLM
+# spend if a store gets an unexpected traffic spike. Tracked in the store's
+# own config.json so it survives restarts without needing a database.
+DAILY_MESSAGE_CAP = 100
+
+CAP_REACHED_REPLY = {
+    "reply": "We're getting a lot of messages right now! Please tap the WhatsApp button below and our team will help you directly. 😊",
+    "show_whatsapp": True,
+}
 
 # "Where's my order" detection — handled by a direct data lookup, not the
 # LLM, so it works identically in mock mode and costs no Groq call.
@@ -100,6 +111,27 @@ def log_unmatched_query(slug: str, message: str) -> None:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     except OSError:
         pass
+
+
+def check_and_increment_daily_usage(config: dict, slug: str) -> bool:
+    """Count this message against today's per-store cap.
+
+    Returns False (and leaves the count untouched) once the store has hit
+    DAILY_MESSAGE_CAP for the current UTC day. The count resets automatically
+    the first time a message comes in on a new day.
+    """
+    today = date.today().isoformat()
+    usage = config.get("usage") or {}
+    if usage.get("date") != today:
+        usage = {"date": today, "count": 0}
+
+    if usage["count"] >= DAILY_MESSAGE_CAP:
+        return False
+
+    usage["count"] += 1
+    config["usage"] = usage
+    save_config(slug, config)
+    return True
 
 
 def format_price(product: dict) -> str:
@@ -254,10 +286,50 @@ def mock_response(message: str, config: dict, slug: str) -> dict:
 
 LANGUAGE_NAMES = {"en": "English", "ml": "Malayalam", "hi": "Hindi"}
 
+# Below this many products, sending the whole catalog every message is cheap
+# enough that trimming isn't worth the risk of leaving something out.
+CATALOG_TRIM_THRESHOLD = 30
+MAX_RELEVANT_PRODUCTS = 25
 
-def build_system_prompt(config: dict) -> str:
+
+def select_relevant_products(message: str, history: list, products: list) -> list:
+    """Trim the product list sent to the LLM for larger catalogs.
+
+    Scores each product by word overlap between its name/tags and the
+    current message plus recent history, so a product already being
+    discussed ("yes I'll take it") stays in context even if the latest
+    message alone wouldn't match it. Token cost scales with catalog size
+    otherwise, which is the biggest lever on per-message LLM cost.
+    """
+    if len(products) <= CATALOG_TRIM_THRESHOLD:
+        return products
+
+    context_text = " ".join(
+        [message] + [turn.get("content", "") for turn in history if isinstance(turn, dict)]
+    ).lower()
+
+    scored = []
+    for product in products:
+        name_words = [w for w in re.findall(r"\w+", product["name"].lower()) if len(w) > 2]
+        tag_words = [t.lower() for t in product.get("tags", [])]
+        score = sum(1 for w in name_words + tag_words if w in context_text)
+        if score > 0:
+            scored.append((score, product))
+
+    if not scored:
+        # Vague/browsing message ("what do you have?") with no keyword hits —
+        # fall back to the first page of the catalog so the bot can still
+        # answer, rather than sending nothing.
+        return products[:MAX_RELEVANT_PRODUCTS]
+
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return [p for _, p in scored[:MAX_RELEVANT_PRODUCTS]]
+
+
+def build_system_prompt(config: dict, products: list | None = None) -> str:
     business = config.get("business", {})
-    products = config.get("products", [])
+    if products is None:
+        products = config.get("products", [])
     faqs = config.get("faqs", [])
     default_language = LANGUAGE_NAMES.get(business.get("language", "en"), "English")
 
@@ -292,7 +364,8 @@ Rules:
 
 
 def real_response(message: str, config: dict, history: list, client: Groq, slug: str) -> dict:
-    messages = [{"role": "system", "content": build_system_prompt(config)}]
+    relevant_products = select_relevant_products(message, history, config.get("products", []))
+    messages = [{"role": "system", "content": build_system_prompt(config, relevant_products)}]
     for turn in history[-6:]:
         role = turn.get("role")
         if role in ("user", "assistant") and turn.get("content"):
@@ -338,6 +411,8 @@ async def chat(slug: str, body: ChatRequest):
     config = load_config(slug)
     if config is None:
         raise HTTPException(status_code=404, detail="Shop not found")
+    if not check_and_increment_daily_usage(config, slug):
+        return CAP_REACHED_REPLY
     if is_leak_attempt(body.message):
         return DEFLECT_REPLY
     status_reply = try_order_status_lookup(body.message, config)
